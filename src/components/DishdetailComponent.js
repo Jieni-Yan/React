@@ -52,7 +52,7 @@ import {Card, CardImg, CardText, CardBody, CardTitle} from 'reactstrap';
     }
 
     const DishDetail = (props) => {
-        const dish = props.selectedDish;
+        const dish = props.dish;
         if(dish != null){
             return (
                 <div className="container">
