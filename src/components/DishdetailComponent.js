@@ -30,7 +30,7 @@ const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => (val) && (val.length >= len);
 
-class CommentComponet extends Component {
+class CommentForm extends Component {
 
     constructor(props) {
         super(props);
@@ -51,7 +51,7 @@ class CommentComponet extends Component {
 
     handleSubmitComment(values) {
         this.toggleModal();
-        alert('Current State is: ' + JSON.stringify(values));
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
     render() {
@@ -136,7 +136,7 @@ class CommentComponet extends Component {
 }
 
 
-function RenderComments({ comments }) {
+function RenderComments({ comments, addComment, dishId}) {
     if (comments != null) {
         const com = comments.map((comment) => {
             return (
@@ -155,7 +155,7 @@ function RenderComments({ comments }) {
                 <div className="row">
                     <h4>Comments</h4>
                     <ul className="list-unstyled">{com}</ul>
-                    <CommentComponet />
+                    <CommentForm dishId={dishId} addComment={addComment}/>
                 </div>
             </div>
         )
@@ -186,7 +186,9 @@ const DishDetail = (props) => {
                         <RenderDish dish={props.dish} />
                     </div>
                     <div className="col-12 col-md-5 m-1">
-                        <RenderComments comments={props.comments} />
+                        <RenderComments comments={props.comments} 
+                            addComment={props.addComment}
+                            dishId={props.dish.id}/>
                     </div>
                 </div>
             </div>
