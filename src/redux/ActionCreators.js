@@ -148,3 +148,78 @@ export const addPromos = (promos) => ({
   type: ActionTypes.ADD_PROMOS,
   payload: promos
 });
+
+export const fetchLeader = () => (dispatch) => {
+
+  dispatch(LeaderLoading());
+
+  return fetch(baseUrl + 'leaders')
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+      error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+      })
+    .then(response => response.json())
+    .then(leader => dispatch(addLeader(leader)))
+    .catch(error => dispatch(leaderFailed(error.message)));
+}
+
+export const LeaderLoading = () => ({
+  type: ActionTypes.LEADER_LOADING,
+});
+
+export const leaderFailed = (errmess) => ({
+  type: ActionTypes.LEADER_FAILED,
+  payload: errmess
+});
+
+export const addLeader = (leader) => ({
+  type: ActionTypes.ADD_LEADER,
+  payload: leader
+});
+
+export const postFeedback = (Feedback) => (dispatch) => {
+
+  const newFeedback = Feedback;
+  newFeedback.date = new Date().toISOString();
+
+  return fetch(baseUrl + 'feedback', {
+    method: 'POST',
+    body: JSON.stringify(newFeedback),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin'
+  })
+    .then(response => {
+      if (response.ok) {
+        return response;
+      }
+      else {
+        var error = new Error('Error ' + response.status + ": " + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+      var errMess = new Error(error.message);
+      throw errMess;
+    })
+    .then(response => response.json())
+    .then(response => {
+      console.log(response);
+      alert("Thank you for youur feedback!" + JSON.stringify(response))})
+    .catch(error => {
+      console.log('Post feedback ', error.message);
+      alert('Your feedback could not be posted\nError: ' + error.message)
+    })
+
+}
